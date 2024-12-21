@@ -7,35 +7,31 @@ struct ListNode {
     ListNode(int x, ListNode *next) : val(x), next(next) {}
 };
 
+#include <stack>
+
 class Solution {
 public:
     bool isPalindrome(ListNode* head) {
+        
+        std::stack<int> stack;
+        ListNode* fast = head;
+        ListNode* slow = head;
 
-        ListNode* wp = head;
-        ListNode* forward = head;
-        ListNode* backward = nullptr;
-
-        if (wp == nullptr || wp->next == nullptr)
-            return true;
-
-        while (forward != backward){
-
-            if (wp->next == backward){
-                if (wp->val == forward->val){
-                    backward = wp;
-                    if (forward != backward)
-                        forward = forward->next;
-                    wp = forward;
-                }
-                else{
-                    return false;
-                }
-            }
-            else
-                wp = wp->next;
-
+        while (fast && fast->next){
+            stack.push(slow->val);
+            slow = slow->next;
+            fast = fast->next->next;
         }
 
+        if (fast)
+            slow = slow->next;
+
+        while (!stack.empty() && slow){
+            if (stack.top() != slow->val)
+                return false;
+            stack.pop();
+            slow = slow->next;
+        }
         return true;
 
     }
